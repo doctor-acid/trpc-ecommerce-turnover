@@ -6,12 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { NextApiRequest, type CreateNextContextOptions, NextApiResponse } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { testCache } from "../cache";
+import { decodeToken } from "../util/jwtActions";
 
 /**
  * 1. CONTEXT
@@ -22,6 +24,7 @@ import { db } from "~/server/db";
  */
 
 type CreateContextOptions = Record<string, never>;
+type CreateContextOptionsUsable = Record<string, NextApiRequest>;
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -33,9 +36,12 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
+const createInnerTRPCContext = (_opts: CreateContextOptionsUsable) => {
+
   return {
     db,
+    testCache,
+    req : _opts.req
   };
 };
 
@@ -46,7 +52,10 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  * @see https://trpc.io/docs/context
  */
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({});
+  let { req } = _opts;
+  return createInnerTRPCContext({
+    req
+  });
 };
 
 /**
@@ -92,6 +101,26 @@ export const createCallerFactory = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 
+const authenticator = t.middleware(({ctx, next})=>{
+  const { req } = ctx;
+
+  let token = req!.headers.authorization && req!.headers.authorization.replace('Bearer ', '');
+
+  if(!token) throw new TRPCError({message: "Please login or signup to proceed", code: "UNAUTHORIZED"})
+
+  try {
+    let { id, type } = decodeToken(token);
+
+    return next({
+      ctx: {
+        userId: id,
+        ...ctx
+      }
+    })
+  } catch (error) {
+    throw new TRPCError({message: 'Malformed Token', code: 'UNAUTHORIZED'})
+  }
+})
 /**
  * Public (unauthenticated) procedure
  *
@@ -99,4 +128,5 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
+export const privateProcedure = t.procedure.use(authenticator)
 export const publicProcedure = t.procedure;
