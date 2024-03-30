@@ -1,0 +1,1 @@
+export const testCache = new Map<any, any>()
