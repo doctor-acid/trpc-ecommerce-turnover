@@ -48,7 +48,8 @@ const config = {
     "@typescript-eslint/no-floating-promises": ["off"],
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/prefer-optional-chain": "off",
-    "@typescript-eslint/return-await": ["off"]
+    "@typescript-eslint/return-await": ["off"],
+    "@react-hooks/exhaustive-deps":"off"
   }
 }
 module.exports = config;
