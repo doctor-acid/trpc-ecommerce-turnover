@@ -37,12 +37,15 @@ export default function CategoriesPage(){
     function calculatePagableNumbers():number[]{
         if(totalPages<=5){
             // console.log('total pages less than 5')
+            // numbers from 1 to totalPages
             return new Array(totalPages).fill(0).map((e,i)=>i+1)
         }else{
             if(page-2<1){
                 // console.log('total pages more than 5')
+                // numbers from 1 to 5
                 return new Array(5).fill(0).map((e,i)=>i+1)
             }else if(page+2>totalPages){
+                // numbers from last-4 to last
                 return new Array(5).fill(0).map((e,i)=>(totalPages-(4-i)))
             }else{
                 return [page-2, page-1,page,page+1, page+2]

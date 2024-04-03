@@ -11,6 +11,7 @@ class TestCache<T,K> extends Map<T,K>{
         }, ttlSeconds*1000)
     }
 
+    // set some cache eviction strategy and VROOM, VROOM
 }
 
 export const testCache = new TestCache<any,any>()
