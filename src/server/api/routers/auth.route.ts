@@ -122,7 +122,7 @@ export const authRouter = createTRPCRouter({
 
   authenticateToken: privateProcedure.query(async ({ ctx }) => {
     let user = ctx.user;
-    let token = user?.authCode;
+    let token = user.authCode;
     return {user: sanitizedUser(user), redirect: user.verified? '/' : '/verify', token }
   }),
 });
