@@ -1,29 +1,37 @@
-# Create T3 App
+# FEATURES : BACKEND
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Some of the features of the code on Backend
 
-## What's next? How do I make an app with this?
+## Local Mock Cache
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+A local mock cache prepared using in memory map. A class that extends Map<any, any> along with a method with time-to-life.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- Used at service layer at server/api/services/ for faster query times.
+- Available at server/cache.ts
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Custom Logger
 
-## Learn More
+A logger class to implement and extend multiple types of loggers for our use case. We can use this to log into file, console or send it to a logger service via events on Kafka or api calls(not recommended for scale).
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- Used at trpc server configuration file at server/apitrpc.ts
+- Available at server/cache.ts
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## Controllers (Not Used)
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+I personally felt separating controllers from routers defeats the purpose of trpc procedures. Hence the main control is implemented in trpc procedures as DUMB controllers, which use services to implement complex internal logic for each ENTITY.
 
-## How do I deploy this?
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+# FEATURES : FRONTEND
+
+Design being not the focus here, there are some exciting features on frontend for functionality.
+
+## Local App State
+
+A local database like service is provided with state/db functions provided to edit and update the app level state in web localStorage. Eases out the operations of app level state management. Easy state management without the setup of Redux. (Redux seemed an overkill here, additionally : trying it with Nextjs and trpc was difficult considering the assignment was primarily backend for me.)
+
+- Used inside pages/*/ for global state
+- Available at pages/local_data.ts
+
+## Pagination bar
+
+Dynamic pagination bar that handles the pages to show based on total pages.
