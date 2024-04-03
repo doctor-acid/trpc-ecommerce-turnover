@@ -7,7 +7,9 @@
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import { headers } from "next/headers";
 import superjson from "superjson";
+import { getToken } from "~/pages/local_data";
 
 import { type AppRouter } from "~/server/api/root";
 
@@ -40,6 +42,11 @@ export const api = createTRPCNext<AppRouter>({
            */
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
+          headers(){
+            return {
+              Authorization: getToken()? 'Bearer '+getToken() : undefined,
+            }
+          }
         }),
       ],
     };
