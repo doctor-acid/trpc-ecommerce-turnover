@@ -12,45 +12,23 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import Logger from "../logger";
 import { testCache } from "../cache";
 import { decodeToken } from "../util/jwtActions";
-
-/**
- * 1. CONTEXT
- *
- * This section defines the "contexts" that are available in the backend API.
- *
- * These allow you to access things when processing a request, like the database, the session, etc.
- */
 
 type CreateContextOptions = Record<string, never>;
 type CreateContextOptionsUsable = Record<string, NextApiRequest>;
 
-/**
- * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
- * it from here.
- *
- * Examples of things you may need it for:
- * - testing, so we don't have to mock Next.js' req/res
- * - tRPC's `createSSGHelpers`, where we don't have req/res
- *
- * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
- */
 const createInnerTRPCContext = (_opts: CreateContextOptionsUsable) => {
 
   return {
     db,
     testCache,
-    req : _opts.req
+    req : _opts.req,
+    Logger
   };
 };
 
-/**
- * This is the actual context you will use in your router. It will be used to process every request
- * that goes through your tRPC endpoint.
- *
- * @see https://trpc.io/docs/context
- */
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   let { req } = _opts;
   return createInnerTRPCContext({
@@ -58,17 +36,25 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   });
 };
 
+
 /**
- * 2. INITIALIZATION
- *
- * This is where the tRPC API is initialized, connecting the context and transformer. We also parse
- * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
- * errors on the backend.
+ * CUSTOM LOGGING FOR ERRORS
+ * USING ERROR FORMATTER
  */
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
-  errorFormatter({ shape, error }) {
+  errorFormatter({ shape, error, ctx }) {
+
+    // CUSTOM LOGGING ENABLED.
+    // COULD BE WRITTEN TO FILE OR A MESSAGE QUEUE and to ANOTHER SERVICE
+
+
+    if(ctx){
+      let logger = new ctx.Logger('console');
+      logger.log(error.message)
+    }
+
     return {
       ...shape,
       data: {
@@ -80,29 +66,14 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   },
 });
 
-/**
- * Create a server-side caller.
- *
- * @see https://trpc.io/docs/server/server-side-calls
- */
+
+
+
 export const createCallerFactory = t.createCallerFactory;
-
-/**
- * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
- *
- * These are the pieces you use to build your tRPC API. You should import these a lot in the
- * "/src/server/api/routers" directory.
- */
-
-/**
- * This is how you create new routers and sub-routers in your tRPC API.
- *
- * @see https://trpc.io/docs/router
- */
 export const createTRPCRouter = t.router;
 
-const authenticator = t.middleware(({ctx, next})=>{
-  const { req } = ctx;
+const authenticator = t.middleware(async ({ctx, next})=>{
+  const { req, db } = ctx;
 
   let token = req!.headers.authorization && req!.headers.authorization.replace('Bearer ', '');
 
@@ -111,9 +82,12 @@ const authenticator = t.middleware(({ctx, next})=>{
   try {
     let { id, type } = decodeToken(token);
 
+    let user = await db.user.findUnique({where: {id}});
+    if(!user) throw new TRPCError({message: "Please login or signup to proceed", code: "UNAUTHORIZED"})
     return next({
       ctx: {
         userId: id,
+        user,
         ...ctx
       }
     })
@@ -121,12 +95,14 @@ const authenticator = t.middleware(({ctx, next})=>{
     throw new TRPCError({message: 'Malformed Token', code: 'UNAUTHORIZED'})
   }
 })
-/**
- * Public (unauthenticated) procedure
- *
- * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
- * guarantee that a user querying is authorized, but you can still access user session data if they
- * are logged in.
- */
+
+
+
+
+
+
 export const privateProcedure = t.procedure.use(authenticator)
 export const publicProcedure = t.procedure;
+
+import { getDataAndMorph } from "../dev/devFunctions";
+getDataAndMorph()
