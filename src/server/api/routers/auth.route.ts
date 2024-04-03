@@ -77,7 +77,7 @@ export const authRouter = createTRPCRouter({
 
           const token = encodeToken({id: user.id, type: 'USER'})
   
-          return {msg: 'Please check verification code sent in your email.', token}
+          return {msg: 'Please check verification code sent in your email.', token, user: sanitizedUser(user)}
         }else{
           throw new TRPCError({
             message: "This email is already registered with a different user. Please login to continue",

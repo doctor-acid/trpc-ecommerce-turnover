@@ -15,6 +15,7 @@ import { db } from "~/server/db";
 import Logger from "../logger";
 import { testCache } from "../cache";
 import { decodeToken } from "../util/jwtActions";
+import { UserService } from "./services/user.service";
 
 // type CreateContextOptions = Record<string, never>;
 type CreateContextOptionsUsable = Record<string, NextApiRequest>;
@@ -82,7 +83,9 @@ const authenticator = t.middleware(async ({ctx, next})=>{
   try {
     const { id } = decodeToken(token);
 
-    const user = await db.user.findUnique({where: {id}});
+    const userService = new UserService(ctx);
+
+    const user = await userService.getUserById(id)
     if(!user) throw new TRPCError({message: "Please login or signup to proceed", code: "UNAUTHORIZED"})
     return next({
       ctx: {

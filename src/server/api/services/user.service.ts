@@ -28,7 +28,7 @@ export class UserService{
             user = await this.ctx.db.user.findUnique({
                 where: {email: email}
             })
-            if(user){
+            if(user && user.verified){
                 await this.ctx.testCache.set('authUser_'+email, user)
             }
         }
