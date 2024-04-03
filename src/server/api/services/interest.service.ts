@@ -1,5 +1,5 @@
-import { Categories, User, UserInterests } from "@prisma/client";
-import { createTRPCContext } from "../trpc";
+import { type Categories, type UserInterests } from "@prisma/client";
+import { type createTRPCContext } from "../trpc";
 import { assertIsError } from "~/utils/exception";
 
 
@@ -13,8 +13,8 @@ export class CategoryService{
         return await this.ctx.db.categories.findUnique({where: {id}})
     }
 
-    async getAllCategoriesPaginated(limit:number, page:number=1, lastId?:number): Promise<Categories[]>{
-        let categories = 
+    async getAllCategoriesPaginated(limit:number, page=1, lastId?:number): Promise<Categories[]>{
+        const categories = 
                 lastId? 
                     await this.ctx.db.categories.findMany({take: limit, where: {id:{gt:lastId}} })
                     :await this.ctx.db.categories.findMany({take: limit, skip: (page-1)*limit })
@@ -31,7 +31,7 @@ export class CategoryService{
 
         
 
-        let userInterest = await this.ctx.db.userInterests.create({
+        const userInterest = await this.ctx.db.userInterests.create({
             data: {
                 userId: userId,
                 interestId: interestId
@@ -39,8 +39,8 @@ export class CategoryService{
         })
 
         // update in cache
-        let interests = await this.ctx.testCache.get('interest_'+userId)
-        let allUserInterests: UserInterests[] = interests ? interests : [];
+        const interests = await this.ctx.testCache.get('interest_'+userId)
+        const allUserInterests: UserInterests[] = interests ? interests : [];
 
         allUserInterests.push(userInterest);
         await this.ctx.testCache.set('interest_'+userId, allUserInterests)
@@ -58,7 +58,7 @@ export class CategoryService{
 
         // For ease of operation WRITE_BACK cache for now.
 
-        let userInterest = await this.ctx.db.userInterests.findFirst({
+        const userInterest = await this.ctx.db.userInterests.findFirst({
             where: {
                 userId: userId,
                 interestId: interestId
@@ -72,7 +72,7 @@ export class CategoryService{
         })
 
         // update in cache
-        let interests = await this.ctx.testCache.get('interest_'+userId)
+        const interests = await this.ctx.testCache.get('interest_'+userId)
         let allUserInterests: UserInterests[] = interests ? interests : [];
 
         allUserInterests = allUserInterests.length ? 
@@ -90,8 +90,7 @@ export class CategoryService{
         try {
             interests = await this.ctx.testCache.get('interest_'+userId)
 
-            console.log('USER INTERESTS FROM CACHE')
-            console.log(interests)
+            if(interests && interests.length) console.log('USER INTERESTS FROM CACHE')
     
             // CACHE miss
             if(!interests || !interests.length){

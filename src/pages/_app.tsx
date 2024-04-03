@@ -2,13 +2,13 @@ import { type AppType } from "next/app";
 import { Inter } from "next/font/google";
 import { useRouter } from 'next/router'
 
+
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getToken, setAuthUser, setToken } from "./local_data";
-import { error } from "console";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,7 +19,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   const [loggedIn, setLoggedIn] = useState(getToken()?true:false);
   // const [user, setUser] = useState({})
 
-  let authCheck = api.auth.authenticateToken.useQuery(undefined, {
+  const authCheck = api.auth.authenticateToken.useQuery(undefined, {
     retry : false
   });
 
@@ -46,22 +46,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     }
   }, [authCheck.isFetched])
 
-  function handleLogin(){
 
-  }
-
-  function handleSignup(){
-    
-  }
-
-
-
-  const logoutUser: React.MouseEventHandler<HTMLButtonElement> = function(e){
+  const logoutUser: React.MouseEventHandler<HTMLButtonElement> = async function(e){
     e.preventDefault();
     setToken(undefined)
     setAuthUser(undefined)
     setLoggedIn(false)
-    router.push('/login')
+    await router.push('/login')
   }
 
   return (
@@ -78,7 +69,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
               <div id="nav-internal-second">
               {
                     ['Categories', 'Sale', 'Clearance', 'New Stock', 'Trending'].map((e, i)=>{
-                        return (<span id={"pageslink"+i} style={{margin:'5px'}}><Link href={"/"}>{e}</Link></span>)
+                        return (<span key={i} id={"pageslink"+i} style={{margin:'5px'}}><Link href={"/"}>{e}</Link></span>)
                     })
                 }
               </div>

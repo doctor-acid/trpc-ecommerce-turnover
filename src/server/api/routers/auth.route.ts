@@ -2,11 +2,11 @@ import { z } from "zod";
 import * as bcrypt from 'bcrypt'
 
 import { createTRPCRouter, publicProcedure, privateProcedure } from "~/server/api/trpc";
-import { decodeToken, encodeToken } from "~/server/util/jwtActions";
-import { User } from "@prisma/client";
+import { encodeToken } from "~/server/util/jwtActions";
 import { TRPCError } from "@trpc/server";
 
-let fakeSalt = bcrypt.genSaltSync(3);
+const fakeSalt = bcrypt.genSaltSync(3);
+
 
 import { fakeEmailService } from "../services/emailService";
 import { randDigits, sanitizedUser } from "~/server/util/utilFunctions";
@@ -20,11 +20,11 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const userService = new UserService(ctx)
-        let authUser = await userService.isAuthUser(input.email, input.password)
+        const authUser = await userService.isAuthUser(input.email, input.password)
   
   
         if(authUser){
-          let token =  encodeToken({id: authUser.id!, type: 'USER'})
+          const token =  encodeToken({id: authUser.id!, type: 'USER'})
           return {user: authUser, redirect: authUser.verified? '/' : '/verify', token }
         }else{
           throw new TRPCError({
@@ -52,7 +52,7 @@ export const authRouter = createTRPCRouter({
     // better password check
     .mutation(async ({ ctx, input }) => {
       try {
-        const userService = new UserService(ctx)
+        // const userService = new UserService(ctx)
         let user = await ctx.db.user.findUnique({where: {email: input.email}})
         if(!user){
           let {ansString: verificationCode} = randDigits(8);
@@ -60,7 +60,7 @@ export const authRouter = createTRPCRouter({
           verificationCode = '12345678'
 
           // store only hashed password
-          let hashedPassword = bcrypt.hashSync(input.password, fakeSalt);
+          const hashedPassword = bcrypt.hashSync(input.password, fakeSalt);
           user = await ctx.db.user.create({
             data: {
               name: input.name,
@@ -72,10 +72,10 @@ export const authRouter = createTRPCRouter({
   
   
           // send email to user : Mock email service
-          let text = `Your verification code for Ecommerce trpc app is ${verificationCode}. Happy shopping!`
-          fakeEmailService(input.email, text, [])
+          const text = `Your verification code for Ecommerce trpc app is ${verificationCode}. Happy shopping!`
+          await fakeEmailService(input.email, text, [])
 
-          let token = encodeToken({id: user.id, type: 'USER'})
+          const token = encodeToken({id: user.id, type: 'USER'})
   
           return {msg: 'Please check verification code sent in your email.', token}
         }else{
@@ -121,8 +121,8 @@ export const authRouter = createTRPCRouter({
     }),
 
   authenticateToken: privateProcedure.query(async ({ ctx }) => {
-    let user = ctx.user;
-    let token = user.authCode;
+    const user = ctx.user;
+    const token = user.authCode!;
     return {user: sanitizedUser(user), redirect: user.verified? '/' : '/verify', token }
   }),
 });

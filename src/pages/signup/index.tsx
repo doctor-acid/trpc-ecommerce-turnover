@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import * as Zod from 'zod'
 import { useRouter } from "next/router";
@@ -40,9 +40,9 @@ export default function Login(){
         }
         try {
             mutation.mutate({email, password, name},{
-                onSuccess: (data)=>{
+                onSuccess: async (data)=>{
                     setToken(data.token)
-                    router.push('/verify')
+                    await router.push('/verify')
                 },
                 onError: (error)=>{
                     window.alert(JSON.stringify(error.message))

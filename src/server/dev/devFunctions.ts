@@ -1,8 +1,8 @@
-import * as faker from '@faker-js/faker'
-import { db } from '../db';
+// import * as faker from '@faker-js/faker'
+// import { db } from '../db';
 
 export const getDataAndMorph = async function(){
-    let data = faker.en.commerce?.product_name
+    // let data = faker.en.commerce?.product_name
     // let mySet: Set<string> = new Set();
 
     // while(mySet.size<=100){

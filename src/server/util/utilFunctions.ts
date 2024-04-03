@@ -7,11 +7,11 @@ export function sanitizedUser(user:Partial<User>): Partial<User>{
     return user
 }
 
-export let randDigits = (n: number, string:boolean=true)=>{
-    let ansString: string = '';
-    let ansNum: number= 0;
+export const randDigits = (n: number)=>{
+    let ansString = '';
+    let ansNum = 0;
     for(let i=0; i<n; i++){
-      let n = Math.floor(Math.random()*10);
+      const n = Math.floor(Math.random()*10);
       ansString+=n;
       ansNum+=(n*Math.pow(10, i))
     }

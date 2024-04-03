@@ -7,7 +7,7 @@
  * need to use are documented accordingly near the end.
  */
 import { TRPCError, initTRPC } from "@trpc/server";
-import { NextApiRequest, type CreateNextContextOptions, NextApiResponse } from "@trpc/server/adapters/next";
+import { type NextApiRequest, type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -16,7 +16,7 @@ import Logger from "../logger";
 import { testCache } from "../cache";
 import { decodeToken } from "../util/jwtActions";
 
-type CreateContextOptions = Record<string, never>;
+// type CreateContextOptions = Record<string, never>;
 type CreateContextOptionsUsable = Record<string, NextApiRequest>;
 
 const createInnerTRPCContext = (_opts: CreateContextOptionsUsable) => {
@@ -30,7 +30,7 @@ const createInnerTRPCContext = (_opts: CreateContextOptionsUsable) => {
 };
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
-  let { req } = _opts;
+  const { req } = _opts;
   return createInnerTRPCContext({
     req
   });
@@ -51,7 +51,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 
     if(ctx){
-      let logger = new ctx.Logger('console');
+      const logger = new ctx.Logger('console');
       logger.log(error.message)
     }
 
@@ -75,14 +75,14 @@ export const createTRPCRouter = t.router;
 const authenticator = t.middleware(async ({ctx, next})=>{
   const { req, db } = ctx;
 
-  let token = req!.headers.authorization && req!.headers.authorization.replace('Bearer ', '');
+  const token = req && req.headers.authorization && req.headers.authorization.replace('Bearer ', '');
 
   if(!token) throw new TRPCError({message: "Please login or signup to proceed", code: "UNAUTHORIZED"})
 
   try {
-    let { id, type } = decodeToken(token);
+    const { id } = decodeToken(token);
 
-    let user = await db.user.findUnique({where: {id}});
+    const user = await db.user.findUnique({where: {id}});
     if(!user) throw new TRPCError({message: "Please login or signup to proceed", code: "UNAUTHORIZED"})
     return next({
       ctx: {
@@ -104,5 +104,5 @@ const authenticator = t.middleware(async ({ctx, next})=>{
 export const privateProcedure = t.procedure.use(authenticator)
 export const publicProcedure = t.procedure;
 
-import { getDataAndMorph } from "../dev/devFunctions";
-getDataAndMorph()
+// import { getDataAndMorph } from "../dev/devFunctions";
+// getDataAndMorph()

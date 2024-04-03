@@ -24,7 +24,7 @@ export const Category: React.FunctionComponent<{selected:boolean, id: number, na
                     if(data.data)
                     removeUserInterest(data.data)
                     else{
-                        let interestId = Number(e.target.value)
+                        const interestId = Number(e.target.value)
                         removeUserInterest(data.data, interestId)
                     }
                 },

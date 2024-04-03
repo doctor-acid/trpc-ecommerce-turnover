@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { Category } from "./Category";
 import { PaginateButtons } from "./PaginateButtons";
@@ -12,7 +12,7 @@ type Icategory = {
     createdAt: Date;
     updatedAt: Date;
 }
-let typedEmptyArr:Icategory[] = []
+const typedEmptyArr:Icategory[] = []
 
 type IUserInterest = {
     id: number;
@@ -91,10 +91,10 @@ export default function CategoriesPage(){
     return(
         <div style={{textAlign:'center'}}>
             <div style={{minHeight:'300px'}}>
-                {categories.map((cat, i)=>
+                {categories.map((cat)=>
                     <Category 
                         key={cat.id}
-                        selected={userInterests.findIndex((e, i)=>e.interestId===cat.id)>=0?true:false}
+                        selected={userInterests.findIndex((e)=>e.interestId===cat.id)>=0?true:false}
                         id={cat.id}
                         name={cat.name}
                     />
@@ -104,8 +104,8 @@ export default function CategoriesPage(){
                 <PaginateButtons disabled={page===1} handlePageChange={handlePageChange} value={"<<"} pageValue={1}/>
                 <PaginateButtons disabled={page===1} handlePageChange={handlePageChange} value={"<"} pageValue={page-1} />
                 {/* <ul> */}
-                    {calculatePagableNumbers().map((n, i)=>{
-                        return (<PaginateButtons disabled={page===n} handlePageChange={handlePageChange} value={n+""} pageValue={n} />)
+                    {calculatePagableNumbers().map((n)=>{
+                        return (<PaginateButtons key={n} disabled={page===n} handlePageChange={handlePageChange} value={n+""} pageValue={n} />)
                     })}
                 {/* </ul> */}
                 <PaginateButtons disabled={page===totalPages} handlePageChange={handlePageChange} value={">"} pageValue={page+1}/>

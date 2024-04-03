@@ -1,5 +1,5 @@
 "use client;"
-import { User, UserInterests } from "@prisma/client"
+import type { User, UserInterests } from "@prisma/client"
 
 export function getToken(){
     return localStorage.getItem('token')
@@ -14,17 +14,17 @@ export function setToken(token: string|undefined): void{
     }
 }
 
-export function getUserInterests(id?:number): UserInterests[]{
-    let interests = localStorage.getItem('user_interests')
+export function getUserInterests(): UserInterests[]{
+    const interests = localStorage.getItem('user_interests')
     return interests? JSON.parse(interests):[]
 }
 
-export function setUserInterests(interests: UserInterests[],id?:number){
+export function setUserInterests(interests: UserInterests[],){
     localStorage.setItem('user_interests', JSON.stringify(interests))
 }
 
-export function addUserInterest(interest: UserInterests,id?:number){
-    let interests = getUserInterests();
+export function addUserInterest(interest: UserInterests,){
+    const interests = getUserInterests();
     interests.push(interest)
     setUserInterests(interests)
 }
@@ -39,7 +39,7 @@ export function removeUserInterest(interest: UserInterests|null, interestId?: nu
 }
 
 export function getAuthUser(): Partial<User>|undefined{
-    let user = localStorage.getItem('user_')
+    const user = localStorage.getItem('user_')
     return user? JSON.parse(user):undefined
 }
 

@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 import * as Zod from 'zod'
 import { useRouter } from "next/router";
 import { setToken } from "../local_data";
-import { error } from "console";
+
 import { assertIsZodError } from "~/utils/exception";
 
 
@@ -37,9 +37,9 @@ export default function Login(){
         }
         try {
             mutation.mutate({email, password}, {
-                onSuccess: (data)=>{
+                onSuccess: async (data)=>{
                     setToken(data.token)
-                    router.push(data.redirect)
+                    await router.push(data.redirect)
                 },
                 onError: (error)=>{
                     window.alert(JSON.stringify(error.message))

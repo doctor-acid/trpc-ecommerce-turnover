@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import * as Zod from 'zod'
@@ -34,8 +33,8 @@ export default function Verify(){
         }
         try {
             mutation.mutate({code}, {
-                onSuccess: (data)=>{
-                    router.push('/')
+                onSuccess: async (_data)=>{
+                    await router.push('/')
                 },
                 onError: (err)=>{
                     window.alert(JSON.stringify(err.message))

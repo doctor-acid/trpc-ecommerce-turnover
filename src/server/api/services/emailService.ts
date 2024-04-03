@@ -6,6 +6,6 @@ export const fakeEmailService = async (to: string, text: string, attachments: Fi
     //   attachments
     // })
   
-    console.log('Mail sent')
+    console.log('Mail sent to: ',to,'text: ', text, ' attachements: ', attachments)
     return {err: null, data: {msg: 'sent'}}
   }

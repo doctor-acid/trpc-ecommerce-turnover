@@ -1,6 +1,6 @@
 import { api } from "~/utils/api";
 import CategoriesPage from "./components/CategoriesPage";
-import { getAuthUser, getUserInterests, setUserInterests } from "./local_data";
+import { setUserInterests } from "./local_data";
 import { useEffect } from "react";
 
 function Home() {

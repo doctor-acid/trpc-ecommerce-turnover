@@ -1,8 +1,8 @@
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 
-import { createTRPCContext } from "../trpc";
+import { type createTRPCContext } from "../trpc";
 import * as bcrypt from 'bcrypt'
-import { randDigits, sanitizedUser } from "~/server/util/utilFunctions";
+import { sanitizedUser } from "~/server/util/utilFunctions";
 
 
 export class UserService{
@@ -12,7 +12,7 @@ export class UserService{
     }
 
     async getUserById(id: number): Promise<Partial<User>|null>{
-        let user = await this.ctx.db.user.findUnique({
+        const user = await this.ctx.db.user.findUnique({
             where: {id}
         })
         return user
