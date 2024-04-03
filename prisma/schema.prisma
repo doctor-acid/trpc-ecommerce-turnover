@@ -13,20 +13,40 @@ datasource db {
 model User {
     id        Int      @id @default(autoincrement())
     name      String
+
+    // userAuth  user_authentication[]
+
     email     String   @unique
     password  String
 
     verified  Boolean  @default(false)
+
     ver_code  String?
 
-    authCode  String?
-
+    authToken  String?
     UserInterests      UserInterests[]
 
     metadata  String?  @default("NA")
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+// model user_authentication {
+//     id        Int      @id @default(autoincrement())
+
+//     user      User     @relation(fields: [userId], references: [id])
+//     userId    Int
+
+//     email     String   @unique
+//     password  String
+
+//     ver_code  String?
+
+//     authToken  String?
+
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// }
 
 model Categories {
     id        Int      @id @default(autoincrement())
