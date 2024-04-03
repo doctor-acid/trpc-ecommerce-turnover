@@ -30,7 +30,7 @@ function Home() {
       <div style={{minHeight:'10px', margin:'5px', padding:'2px'}}>
       </div>
       <div>
-        {userInterests.data?<CategoriesPage userInterests={userInterests.data}/>: '...Loading Interests'}
+        {userInterests.data?<CategoriesPage />: '...Loading Interests'}
       </div>
     </div>
 

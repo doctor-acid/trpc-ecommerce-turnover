@@ -23,6 +23,21 @@ export function setUserInterests(interests: UserInterests[],id?:number){
     localStorage.setItem('user_interests', JSON.stringify(interests))
 }
 
+export function addUserInterest(interest: UserInterests,id?:number){
+    let interests = getUserInterests();
+    interests.push(interest)
+    setUserInterests(interests)
+}
+
+export function removeUserInterest(interest: UserInterests|null, interestId?: number){
+    let interests = getUserInterests();
+    if(!interest)
+        interests = interests.filter((item)=>item.id!==interestId)
+    else 
+        interests = interests.filter((item)=>item.id!==interest.id)
+    setUserInterests(interests)
+}
+
 export function getAuthUser(): Partial<User>|undefined{
     let user = localStorage.getItem('user_')
     return user? JSON.parse(user):undefined

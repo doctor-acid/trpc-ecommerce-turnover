@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { Category } from "./Category";
 import { PaginateButtons } from "./PaginateButtons";
+import { getUserInterests } from "../local_data";
 
 type Icategory = {
     id: number;
@@ -22,7 +23,7 @@ type IUserInterest = {
     updatedAt: Date;
 }
 
-export default function CategoriesPage({userInterests}:{userInterests: IUserInterest[]}){
+export default function CategoriesPage(){
     const [page, setPage] = useState(1);
     const [totalPages, settotalPages] = useState(1);
     const [categories, setCategories] = useState(typedEmptyArr);
@@ -31,6 +32,8 @@ export default function CategoriesPage({userInterests}:{userInterests: IUserInte
     
     const limit = 6;
     
+    const userInterests: IUserInterest[] = getUserInterests();
+
     function calculatePagableNumbers():number[]{
         if(totalPages<=5){
             // console.log('total pages less than 5')

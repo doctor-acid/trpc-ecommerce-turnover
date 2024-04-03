@@ -18,7 +18,7 @@ export const interestRouter = createTRPCRouter({
                 code: 'BAD_REQUEST'
             })
         }
-        let userInterest = categoryService.addInterest(input.id, ctx.userId)
+        let userInterest = await categoryService.addInterest(input.id, ctx.userId)
         return {data: userInterest}
     }),
 
@@ -68,7 +68,7 @@ export const interestRouter = createTRPCRouter({
               code: 'BAD_REQUEST'
           })
       }
-      let userInterest = categoryService.removeInterest(input.id, ctx.userId)
+      let userInterest = await categoryService.removeInterest(input.id, ctx.userId)
       return {data: userInterest}
   }),
   countOfTotalCategories: privateProcedure
