@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getToken, setAuthUser, setToken } from "../components/local_data";
+import { getToken, setAuthUser, setToken, setUserInterests } from "../components/local_data";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,7 +16,7 @@ const inter = Inter({
 });
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter()
-  const [loggedIn, setLoggedIn] = useState(getToken()?true:false);
+  const [loggedIn, setLoggedIn] = useState(false);
   // const [user, setUser] = useState({})
 
   const authCheck = api.auth.authenticateToken.useQuery(undefined, {
@@ -51,6 +51,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     e.preventDefault();
     setToken(undefined)
     setAuthUser(undefined)
+    setUserInterests([])
     setLoggedIn(false)
     await router.push('/login')
   }
