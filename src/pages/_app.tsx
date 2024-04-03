@@ -53,29 +53,30 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
   return (
     <main className={`font-sans ${inter.variable}`}>
-      <nav>
-          <ul>
-            <div id="nav-first" style={{display:'flex'}}>
+      <nav className={'grid grid-col-12 grid-flow-col border-2 border-gray-200 p-2 mt-0 mb-2 '}>
+            <div key="nav-first" id="nav-first" style={{display:'flex'}} className="col-span-3">
               <div style={{display:'inline-flex', flexDirection:'column', textAlign:'left', margin:'5px', padding:'17px'}}>
-                <span>
+                <span className="bg-gray-500 p-2 rounded-sm text-white">
                   <Link href={"/"}>ECOMMERCE</Link>
                 </span>
               </div>
-              <div id="nav-second" style={{display:'inline-flex'}}>
+            </div>
+            <div key="nav-second" id="nav-second" style={{display:'flex', alignItems:'center'}} className="col-span-7">
+              <div id="nav-internal-second">
               {
                     ['Categories', 'Sale', 'Clearance', 'New Stock', 'Trending'].map((e, i)=>{
                         return (<span id={"pageslink"+i} style={{margin:'5px'}}><Link href={"/"}>{e}</Link></span>)
                     })
                 }
               </div>
-              <div id="nav-third" style={{display:'inline-flex', flexDirection:'column', textAlign:'left', margin:'5px', padding:'17px'}}>
-                <span>
-                  {loggedIn ?(<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>logoutUser(e)}>Logout</button>):(router.pathname === "/signup"? (<Link href={"/login"}>LOGIN</Link>):(<Link href={"/signup"}>SIGNUP</Link>))}
-                </span>
+            </div>
+            <div className="col-span-2" style={{display:'flex', alignItems:'center'}}>
+              <div id="nav-internal-third" >
+                  <span className="bg-red-500 p-2 rounded-md text-white">
+                    {loggedIn ?(<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>logoutUser(e)}>Logout</button>):(router.pathname === "/signup"? (<Link href={"/login"}>LOGIN</Link>):(<Link href={"/signup"}>SIGNUP</Link>))}
+                  </span>
               </div>
             </div>
-          </ul>
-
       </nav>
       <div >
         <div style={{minHeight:'400px', maxWidth: '500px', border:'2px solid red', margin:'auto'}}>
