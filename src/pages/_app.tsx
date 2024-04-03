@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getToken, setAuthUser, setToken } from "./local_data";
+import { getToken, setAuthUser, setToken } from "../components/local_data";
 
 const inter = Inter({
   subsets: ["latin"],

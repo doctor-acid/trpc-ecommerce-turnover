@@ -8,7 +8,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
-import { getToken } from "~/pages/local_data";
+import { getToken } from "~/components/local_data";
 
 import { type AppRouter } from "~/server/api/root";
 

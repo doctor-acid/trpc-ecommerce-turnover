@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-import { addUserInterest, removeUserInterest } from "../local_data";
+import { addUserInterest, removeUserInterest } from "./local_data";
 
 export const Category: React.FunctionComponent<{selected:boolean, id: number, name: string}> = ({selected, id, name}:{selected:boolean, id: number, name: string})=>{
     const [checked, setChecked] = useState(selected);

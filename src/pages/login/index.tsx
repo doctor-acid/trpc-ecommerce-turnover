@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import * as Zod from 'zod'
 import { useRouter } from "next/router";
-import { setToken } from "../local_data";
+import { setToken } from "../../components/local_data";
 
 import { assertIsZodError } from "~/utils/exception";
 

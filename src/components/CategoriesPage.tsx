@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import { Category } from "./Category";
 import { PaginateButtons } from "./PaginateButtons";
-import { getUserInterests } from "../local_data";
+import { getUserInterests } from "./local_data";
 
 type Icategory = {
     id: number;
