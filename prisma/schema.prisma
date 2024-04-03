@@ -23,7 +23,7 @@ model User {
 
     ver_code  String?
 
-    authToken  String?
+    authCode  String?
     UserInterests      UserInterests[]
 
     metadata  String?  @default("NA")
