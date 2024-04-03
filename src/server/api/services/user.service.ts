@@ -32,8 +32,8 @@ export class UserService{
                 await this.ctx.testCache.set('authUser_'+email, user)
             }
         }
-    
-        if(user && bcrypt.compareSync(password, user?.password))
+
+        if(user && bcrypt.compareSync(password, user.password))
         return sanitizedUser(user)
         else
         return null

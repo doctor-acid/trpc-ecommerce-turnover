@@ -35,6 +35,9 @@ export const authRouter = createTRPCRouter({
         }
       } catch (error) {
         console.log(error)
+        if(error instanceof TRPCError){
+          throw error
+        }
         throw new TRPCError({
           message: 'Some problem occurred',
           code: 'INTERNAL_SERVER_ERROR',
@@ -84,7 +87,10 @@ export const authRouter = createTRPCRouter({
         }
   
       } catch (error) {
-        console.log(error)
+        // console.log(error)
+        if(error instanceof TRPCError){
+          throw error
+        }
         throw new TRPCError({
           message: 'Something went wrong.',
           code: 'INTERNAL_SERVER_ERROR',

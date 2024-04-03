@@ -16,12 +16,16 @@ const inter = Inter({
 });
 const MyApp: AppType = ({ Component, pageProps }) => {
   const router = useRouter()
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(getToken()?true:false);
   // const [user, setUser] = useState({})
 
   let authCheck = api.auth.authenticateToken.useQuery(undefined, {
     retry : false
   });
+
+  useEffect(()=>{
+    setLoggedIn(getToken()?true:false)
+  })
 
   useEffect(()=>{
     if(authCheck.isFetched){
@@ -42,12 +46,21 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     }
   }, [authCheck.isFetched])
 
+  function handleLogin(){
+
+  }
+
+  function handleSignup(){
+    
+  }
+
 
 
   const logoutUser: React.MouseEventHandler<HTMLButtonElement> = function(e){
     e.preventDefault();
     setToken(undefined)
     setAuthUser(undefined)
+    setLoggedIn(false)
     router.push('/login')
   }
 
@@ -73,7 +86,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             <div className="col-span-2" style={{display:'flex', alignItems:'center'}}>
               <div id="nav-internal-third" >
                   <span className="bg-red-500 p-2 rounded-md text-white">
-                    {loggedIn ?(<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>logoutUser(e)}>Logout</button>):(router.pathname === "/signup"? (<Link href={"/login"}>LOGIN</Link>):(<Link href={"/signup"}>SIGNUP</Link>))}
+                    {loggedIn ?
+                        (<button onClick={(e:React.MouseEvent<HTMLButtonElement, MouseEvent>)=>logoutUser(e)}>Logout</button>)
+                        :(router.pathname === "/signup"? 
+                            (<Link href={"/login"}>LOGIN</Link>)
+                            :(<Link href={"/signup"}>SIGNUP</Link>))}
                   </span>
               </div>
             </div>
